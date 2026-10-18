@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talaba O'yin — Guruh reytingi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0A0A0F;
+      color: #F8FAFC;
+      overflow-x: hidden;
+    }
+    
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #A855F7 0%, #3B82F6 50%, #06B6D4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .neon-text {
+      text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(168, 85, 247, 0.4);
+    }
+    
+    /* Grid background */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0A0A0F; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #A855F7, #3B82F6);
+      border-radius: 4px;
+    }
+    
+    /* === ANIMATSIYALAR === */
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    @keyframes float-coin {
+      0%, 100% { transform: translateY(0) rotateY(0deg) rotateX(0deg); }
+      50% { transform: translateY(-30px) rotateY(180deg) rotateX(10deg); }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.8); }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+    }
+    
+    @keyframes scroll-down {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(12px); opacity: 0.3; }
+    }
+    
+    @keyframes orb-move {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+      50% { transform: translate(30px, -30px) scale(1.2); opacity: 0.6; }
+    }
+    
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-coin { animation: float-coin 4s ease-in-out infinite; }
+    .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .animate-pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+    .animate-scroll-down { animation: scroll-down 2s ease-in-out infinite; }
+    .animate-orb { animation: orb-move 8s ease-in-out infinite; }
+    
+    .shimmer-line {
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+    
+    .fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+    .fade-in { animation: fade-in 1s ease-out forwards; }
+    
+    .delay-1 { animation-delay: 0.2s; opacity: 0; }
+    .delay-2 { animation-delay: 0.4s; opacity: 0; }
+    .delay-3 { animation-delay: 0.6s; opacity: 0; }
+    .delay-4 { animation-delay: 0.8s; opacity: 0; }
+    
+    /* Neon orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+    
+    /* Floating coins */
+    .coin {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.6), inset 0 0 10px rgba(255,255,255,0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #78350F;
+    }
+    
+    /* Game card hover */
+    .game-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .game-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    
+    .game-card:hover::before { opacity: 1; }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.3), 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .game-card .card-icon {
+      display: inline-block;
+      transition: transform 0.5s ease;
+    }
+    
+    .game-card:hover .card-icon {
+      transform: scale(1.2) rotate(10deg);
+    }
+    
+    .game-card .card-arrow {
+      display: inline-block;
+      transition: transform 0.5s ease;
+    }
+    
+    .game-card:hover .card-arrow {
+      animation: card-arrow-move 0.5s ease-in-out infinite;
+    }
+    
+    @keyframes card-arrow-move {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+    
+    /* Button hover */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+    
+    .btn-primary:hover { transform: scale(1.05); }
+    .btn-primary:active { transform: scale(0.95); }
+    
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      background-size: 200% 100%;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .btn-primary:hover::after {
+      opacity: 1;
+      animation: shimmer 1.5s linear infinite;
+    }
+    
+    /* Leaderboard row hover */
+    .leaderboard-row {
+      transition: all 0.3s ease;
+    }
+    
+    .leaderboard-row:hover {
+      transform: translateX(5px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.5rem !important; }
+      .orb { display: none; }
+      .coin { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg">
+    
+    <!-- Neon orbs -->
+    <div class="orb" style="width: 500px; height: 500px; left: 10%; top: 20%; background: radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%); animation-delay: 0s;"></div>
+    <div class="orb" style="width: 400px; height: 400px; left: 70%; top: 10%; background: radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%); animation-delay: 2s;"></div>
+    <div class="orb" style="width: 350px; height: 350px; left: 50%; top: 70%; background: radial-gradient(circle, rgba(6,182,212,0.4) 0%, transparent 70%); animation-delay: 4s;"></div>
+    
+    <!-- Floating coins -->
+    <div class="coin" style="width: 50px; height: 50px; left: 15%; top: 30%; font-size: 20px; animation-delay: 0s;">🪙</div>
+    <div class="coin" style="width: 40px; height: 40px; left: 80%; top: 25%; font-size: 16px; animation-delay: 1.5s;">🪙</div>
+    <div class="coin" style="width: 60px; height: 60px; left: 75%; top: 70%; font-size: 24px; animation-delay: 3s;">🪙</div>
+    <div class="coin" style="width: 35px; height: 35px; left: 20%; top: 75%; font-size: 14px; animation-delay: 0.8s;">🪙</div>
+    <div class="coin" style="width: 45px; height: 45px; left: 85%; top: 55%; font-size: 18px; animation-delay: 2.2s;">🪙</div>
+    
+    <!-- Content -->
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-8 fade-in">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse-dot"></span>
+        <span class="text-sm text-slate-300">Yangi mavsum boshlandi</span>
+      </div>
+      
+      <!-- Title -->
+      <h1 class="hero-title font-display text-5xl md:text-7xl font-bold mb-6 leading-tight fade-in-up delay-1">
+        <span class="text-white">Guruhingizni</span><br>
+        <span class="gradient-text neon-text">reytingda birinchi</span><br>
+        <span class="text-white">qiling!</span>
+      </h1>
+      
+      <!-- Subtitle -->
+      <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto fade-in-up delay-2">
+        Shaxmat, Mafia, Quiz o'ynang — tanga ishlang, guruh reytingida ko'tariling
+      </p>
+      
+      <!-- CTA buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center fade-in-up delay-3">
+        <button onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})" 
+                class="btn-primary px-8 py-4 rounded-xl font-bold text-white"
+                style="background: linear-gradient(135deg, #A855F7 0%, #3B82F6 100%); box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);">
+          Bepul boshlash
+        </button>
+        <button onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})"
+                class="btn-primary px-8 py-4 rounded-xl font-bold text-white glass border border-white/20 hover:border-cyan-400/50 transition-colors">
+          O'yinlarni ko'rish
+        </button>
+      </div>
+      
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-4 mt-16 max-w-2xl mx-auto fade-in-up delay-4">
+        <div class="glass rounded-xl p-4">
+          <div class="font-display text-2xl font-bold gradient-text">1,500+</div>
+          <div class="text-xs text-slate-400 mt-1">Faol talaba</div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="font-display text-2xl font-bold gradient-text">50+</div>
+          <div class="text-xs text-slate-400 mt-1">Guruhlar</div>
+        </div>
+        <div class="glass rounded-xl p-4">
+          <div class="font-display text-2xl font-bold gradient-text">10K+</div>
+          <div class="text-xs text-slate-400 mt-1">O'yinlar</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-scroll-down">
+      <div class="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2">
+        <div class="w-1 h-2 rounded-full bg-purple-500 animate-scroll-down"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GAMES ==================== -->
+  <section id="games" class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center mb-16 fade-in-up">
+        <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">
+          <span class="text-white">O'yin </span>
+          <span class="gradient-text">tanlang</span>
+        </h2>
+        <p class="text-slate-400 text-lg">
+          Har bir o'yinda tanga ishlang va guruh reytingida ko'tariling
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Chess -->
+        <div class="game-card glass-strong rounded-2xl p-6">
+          <div class="relative z-10">
+            <div class="card-icon text-5xl mb-4">♟️</div>
+            <h3 class="font-display text-xl font-bold mb-2" style="color: #A855F7;">Shaxmat</h3>
+            <p class="text-sm text-slate-400">Strategiya va mantiq. Raqibingizni yutib, tanga ishlang.</p>
+            <div class="mt-4 flex items-center gap-2 text-sm font-semibold" style="color: #A855F7;">
+              <span>O'ynash</span>
+              <span class="card-arrow">→</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mafia -->
+        <div class="game-card glass-strong rounded-2xl p-6">
+          <div class="relative z-10">
+            <div class="card-icon text-5xl mb-4">🎭</div>
+            <h3 class="font-display text-xl font-bold mb-2" style="color: #EC4899;">Mafia</h3>
+            <p class="text-sm text-slate-400">Ijtimoiy o'yin. Do'stlaringiz bilan o'ynang, tanga yutib oling.</p>
+            <div class="mt-4 flex items-center gap-2 text-sm font-semibold" style="color: #EC4899;">
+              <span>O'ynash</span>
+              <span class="card-arrow">→</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quiz -->
+        <div class="game-card glass-strong rounded-2xl p-6">
+          <div class="relative z-10">
+            <div class="card-icon text-5xl mb-4">🧠</div>
+            <h3 class="font-display text-xl font-bold mb-2" style="color: #06B6D4;">Quiz</h3>
+            <p class="text-sm text-slate-400">Bilimingizni sinab ko'ring. Har bir to'g'ri javob — tanga.</p>
+            <div class="mt-4 flex items-center gap-2 text-sm font-semibold" style="color: #06B6D4;">
+              <span>O'ynash</span>
+              <span class="card-arrow">→</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== LEADERBOARD ==================== -->
+  <section class="py-24 px-6 relative">
+    <div class="max-w-4xl mx-auto">
+      
+      <div class="text-center mb-12 fade-in-up">
+        <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">
+          <span class="text-white">Jonli </span>
+          <span class="gradient-text">reyting</span>
+        </h2>
+        <p class="text-slate-400 text-lg">
+          Guruhlar real vaqtda raqobatlashmoqda
+        </p>
+      </div>
+      
+      <div class="glass-strong rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display text-lg font-bold text-white">🏆 Guruh reytingi</h3>
+          <span class="text-xs text-green-500 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse-dot"></span>
+            LIVE
+          </span>
+        </div>
+        
+        <div class="space-y-2">
+          
+          <div class="leaderboard-row flex items-center justify-between p-3 rounded-xl bg-white/5">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm" 
+                    style="background: rgba(251,191,36,0.2); color: #FBBF24; border: 1px solid rgba(251,191,36,0.4);">1</span>
+              <span class="font-semibold text-white">AT-21</span>
+            </div>
+            <div class="flex items-center gap-1 text-yellow-400 font-bold text-sm">🪙 12,450</div>
+          </div>
+          
+          <div class="leaderboard-row flex items-center justify-between p-3 rounded-xl bg-white/5">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm" 
+                    style="background: rgba(148,163,184,0.2); color: #94A3B8; border: 1px solid rgba(148,163,184,0.4);">2</span>
+              <span class="font-semibold text-white">IQT-20</span>
+            </div>
+            <div class="flex items-center gap-1 text-yellow-400 font-bold text-sm">🪙 11,200</div>
+          </div>
+          
+          <div class="leaderboard-row flex items-center justify-between p-3 rounded-xl bg-white/5">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm" 
+                    style="background: rgba(205,127,50,0.2); color: #CD7F32; border: 1px solid rgba(205,127,50,0.4);">3</span>
+              <span class="font-semibold text-white">KI-22</span>
+            </div>
+            <div class="flex items-center gap-1 text-yellow-400 font-bold text-sm">🪙 10,800</div>
+          </div>
+          
+          <div class="leaderboard-row flex items-center justify-between p-3 rounded-xl bg-white/5">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm" 
+                    style="background: rgba(168,85,247,0.2); color: #A855F7; border: 1px solid rgba(168,85,247,0.4);">4</span>
+              <span class="font-semibold text-white">DT-21</span>
+            </div>
+            <div class="flex items-center gap-1 text-yellow-400 font-bold text-sm">🪙 9,500</div>
+          </div>
+          
+          <div class="leaderboard-row flex items-center justify-between p-3 rounded-xl bg-white/5">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm" 
+                    style="background: rgba(59,130,246,0.2); color: #3B82F6; border: 1px solid rgba(59,130,246,0.4);">5</span>
+              <span class="font-semibold text-white">MT-20</span>
+            </div>
+            <div class="flex items-center gap-1 text-yellow-400 font-bold text-sm">🪙 8,200</div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CTA ==================== -->
+  <section class="py-24 px-6">
+    <div class="max-w-3xl mx-auto glass-strong rounded-3xl p-12 text-center relative overflow-hidden">
+      <div class="absolute inset-0 opacity-30" 
+           style="background: radial-gradient(circle at 50% 0%, #A855F7 0%, transparent 70%);"></div>
+      <div class="relative z-10">
+        <h2 class="font-display text-3xl md:text-4xl font-bold mb-4 text-white">
+          Tayyormisiz?
+        </h2>
+        <p class="text-slate-400 mb-8 text-lg">
+          Guruhingizni ro'yxatdan o'tkazing va bugun o'ynashni boshlang
+        </p>
+        <button class="btn-primary px-10 py-4 rounded-xl font-bold text-white"
+                style="background: linear-gradient(135deg, #A855F7 0%, #3B82F6 100%); box-shadow: 0 0 40px rgba(168, 85, 247, 0.6);">
+          Hoziroq boshlash
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="py-8 px-6 text-center text-slate-500 text-sm border-t border-white/5">
+    <p>© 2026 Talaba O'yin — Guruh reytingi platformasi</p>
+  </footer>
+
+</body>
+</html>
