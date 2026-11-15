@@ -88,7 +88,7 @@
     <section id="start">
       <div class="card">
         <h1>GUI dasturlash testi</h1>
-        <p class="lead">10 ta nazorat savoli asosida tuzilgan test. Har bir javobdan so'ng to'g'ri yoki noto'g'riligi va izoh ko'rsatiladi.</p>
+        <p class="lead">10 ta nazorat savoli test shaklida. Har bir javobdan so'ng to'g'ri yoki noto'g'riligi va izoh ko'rsatiladi.</p>
         <div class="stats">
           <div class="stat"><b id="sTotal">0</b><span>savol</span></div>
           <div class="stat"><b>10</b><span>mavzu</span></div>
@@ -98,8 +98,8 @@
         <div class="chips" id="topicChips"></div>
         <div class="label">Savollar tartibi</div>
         <div class="chips">
-          <button class="chip on" data-order="shuffle">Aralash</button>
-          <button class="chip" data-order="seq">Ketma-ket</button>
+          <button class="chip" data-order="shuffle">Aralash</button>
+          <button class="chip on" data-order="seq">Ketma-ket</button>
         </div>
       </div>
     </section>
@@ -142,7 +142,7 @@ const store = {
   set(k,v){ try{localStorage.setItem(k,v)}catch(e){} }
 };
 let selectedTopics = new Set(TOPICS.map((_,i)=>i));
-let order = "shuffle";
+let order = "seq";
 let deck = [], idx = 0, score = 0, answered = false, wrong = [];
 
 const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
