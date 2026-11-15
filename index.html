@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b2340">
+<title>GUI dasturlash — Test</title>
+<style>
+  :root{
+    --bg:#f6f3ee; --card:#fffdf9; --ink:#1b2340; --muted:#6b7086; --line:#e6e0d6;
+    --accent:#c0453b; --accent2:#1b2340; --ok:#2f8f5b; --okbg:#e5f4ea; --bad:#c0453b; --badbg:#fbe7e4;
+    --shadow:0 6px 24px rgba(27,35,64,.08);
+  }
+  body.dark{
+    --bg:#11152a; --card:#1a2038; --ink:#eef0f7; --muted:#9aa0bb; --line:#2a3152;
+    --accent:#e0675c; --accent2:#eef0f7; --okbg:#173326; --badbg:#3a1d1d; --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;transition:background .25s,color .25s}
+  .app{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+  header{position:sticky;top:0;z-index:5;background:#1b2340;color:#fff;padding:14px 16px calc(12px);display:flex;align-items:center;gap:12px}
+  .logo{width:38px;height:38px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+  .htitle{flex:1;min-width:0}
+  .htitle b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .htitle small{opacity:.7;font-size:12px}
+  .iconbtn{border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;border-radius:10px;width:38px;height:38px;font-size:17px;cursor:pointer}
+  .bar{height:4px;background:rgba(255,255,255,.12)}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#f0a35e);transition:width .35s}
+  main{flex:1;padding:18px 16px 110px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:27px;line-height:1.2;margin:4px 0 8px}
+  .lead{color:var(--muted);line-height:1.5;margin:0 0 18px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+  .stat{background:var(--bg);border-radius:14px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:22px}
+  .stat span{font-size:12px;color:var(--muted)}
+  .label{font-size:13px;font-weight:600;color:var(--muted);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 13px;font-size:13px;cursor:pointer}
+  .chip.on{background:var(--accent2);color:var(--bg);border-color:var(--accent2)}
+  .btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:transform .1s,opacity .2s}
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn:disabled{opacity:.45}
+  .topic{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:5px 10px;border-radius:999px;margin-bottom:12px}
+  .qnum{color:var(--muted);font-size:13px;margin-bottom:6px}
+  .qtext{font-size:19px;line-height:1.45;font-weight:600;margin:0 0 18px}
+  .opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;font-size:15.5px;line-height:1.4;cursor:pointer;transition:border-color .15s,background .15s}
+  .opt .k{flex:none;width:28px;height:28px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-weight:700;font-size:13px}
+  .opt:not(:disabled):active{border-color:var(--accent2)}
+  .opt.ok{border-color:var(--ok);background:var(--okbg)}
+  .opt.ok .k{background:var(--ok);color:#fff}
+  .opt.bad{border-color:var(--bad);background:var(--badbg)}
+  .opt.bad .k{background:var(--bad);color:#fff}
+  .opt:disabled{cursor:default}
+  .explain{border-radius:14px;padding:14px;margin-top:6px;line-height:1.5;font-size:14.5px;animation:pop .25s}
+  .explain.ok{background:var(--okbg)} .explain.bad{background:var(--badbg)}
+  .explain b{display:block;margin-bottom:4px}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .footer{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%)}
+  .footer .inner{max-width:528px;margin:0 auto;display:flex;gap:10px}
+  .score-ring{width:150px;height:150px;margin:6px auto 12px;position:relative}
+  .score-ring svg{transform:rotate(-90deg)}
+  .score-ring div{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .score-ring b{font-size:34px;display:block}
+  .center{text-align:center}
+  .rev{border-top:1px solid var(--line);padding:14px 0}
+  .rev:first-child{border-top:0}
+  .rev p{margin:4px 0;font-size:14.5px;line-height:1.45}
+  .rev .w{color:var(--bad)} .rev .r{color:var(--ok)}
+  .hidden{display:none!important}
+  .mini{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">G</div>
+    <div class="htitle"><b>Grafik foydalanuvchi interfeysli dasturlash</b><small id="hsub">Nazorat savollari asosida test</small></div>
+    <button class="iconbtn" id="homeBtn" title="Bosh sahifa">⌂</button>
+    <button class="iconbtn" id="themeBtn" title="Tun rejimi">🌙</button>
+  </header>
+  <div class="bar"><i id="prog"></i></div>
+
+  <main>
+    <!-- START -->
+    <section id="start">
+      <div class="card">
+        <h1>GUI dasturlash testi</h1>
+        <p class="lead">10 ta nazorat savoli asosida tuzilgan test. Har bir javobdan so'ng to'g'ri yoki noto'g'riligi va izoh ko'rsatiladi.</p>
+        <div class="stats">
+          <div class="stat"><b id="sTotal">0</b><span>savol</span></div>
+          <div class="stat"><b>10</b><span>mavzu</span></div>
+          <div class="stat"><b id="sBest">—</b><span>eng yaxshi</span></div>
+        </div>
+        <div class="label">Mavzular</div>
+        <div class="chips" id="topicChips"></div>
+        <div class="label">Savollar tartibi</div>
+        <div class="chips">
+          <button class="chip on" data-order="shuffle">Aralash</button>
+          <button class="chip" data-order="seq">Ketma-ket</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="hidden">
+      <div class="card">
+        <div class="qnum" id="qnum"></div>
+        <span class="topic" id="qtopic"></span>
+        <p class="qtext" id="qtext"></p>
+        <div id="opts"></div>
+        <div id="explain"></div>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="result" class="hidden">
+      <div class="card center">
+        <div class="score-ring">
+          <svg width="150" height="150"><circle cx="75" cy="75" r="64" stroke="var(--line)" stroke-width="12" fill="none"/>
+            <circle id="ring" cx="75" cy="75" r="64" stroke="var(--ok)" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402" style="transition:stroke-dashoffset 1s"/></svg>
+          <div><span><b id="rPct">0%</b><span class="mini" id="rCount"></span></span></div>
+        </div>
+        <h1 id="rTitle"></h1>
+        <p class="lead" id="rText"></p>
+      </div>
+      <div class="label" id="revLabel">Xato javoblar</div>
+      <div class="card" id="review"></div>
+    </section>
+  </main>
+
+  <div class="footer"><div class="inner" id="footer"></div></div>
+</div>
+
+<script src="questions.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try{return localStorage.getItem(k)}catch(e){return null} },
+  set(k,v){ try{localStorage.setItem(k,v)}catch(e){} }
+};
+let selectedTopics = new Set(TOPICS.map((_,i)=>i));
+let order = "shuffle";
+let deck = [], idx = 0, score = 0, answered = false, wrong = [];
+
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const esc = s => s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+// Theme
+if(store.get("gui_theme")==="dark") document.body.classList.add("dark");
+$("themeBtn").onclick = () => {
+  document.body.classList.toggle("dark");
+  store.set("gui_theme", document.body.classList.contains("dark") ? "dark" : "light");
+};
+$("homeBtn").onclick = () => { if(!answered && idx>0 && !$("quiz").classList.contains("hidden") && !confirm("Testni to'xtatasizmi?")) return; showStart(); };
+
+// Start screen
+function renderChips(){
+  $("topicChips").innerHTML = `<button class="chip ${selectedTopics.size===TOPICS.length?'on':''}" data-all>Hammasi</button>` +
+    TOPICS.map((t,i)=>`<button class="chip ${selectedTopics.has(i)&&selectedTopics.size<TOPICS.length?'on':''}" data-t="${i}">${i+1}. ${t}</button>`).join("");
+  const n = QUESTIONS.filter(q=>selectedTopics.has(q.t)).length;
+  $("sTotal").textContent = n;
+  const best = store.get("gui_best"); $("sBest").textContent = best ? best+"%" : "—";
+  setFooter(`<button class="btn" id="go" ${n?'':'disabled'}>Testni boshlash →</button>`);
+  $("go") && ($("go").onclick = startQuiz);
+}
+$("topicChips").onclick = e => {
+  const b = e.target.closest(".chip"); if(!b) return;
+  if(b.hasAttribute("data-all")) selectedTopics = new Set(TOPICS.map((_,i)=>i));
+  else {
+    const t = +b.dataset.t;
+    if(selectedTopics.size===TOPICS.length) selectedTopics = new Set([t]);
+    else { selectedTopics.has(t) ? selectedTopics.delete(t) : selectedTopics.add(t); if(!selectedTopics.size) selectedTopics = new Set(TOPICS.map((_,i)=>i)); }
+  }
+  renderChips();
+};
+document.querySelectorAll("[data-order]").forEach(b => b.onclick = () => {
+  order = b.dataset.order;
+  document.querySelectorAll("[data-order]").forEach(x=>x.classList.toggle("on", x===b));
+});
+
+function show(id){ ["start","quiz","result"].forEach(s=>$(s).classList.toggle("hidden", s!==id)); window.scrollTo(0,0); }
+function setFooter(html){ $("footer").innerHTML = html; }
+
+function showStart(){ show("start"); $("prog").style.width="0"; $("hsub").textContent="Nazorat savollari asosida test"; renderChips(); }
+
+function startQuiz(){
+  let qs = QUESTIONS.filter(q=>selectedTopics.has(q.t));
+  if(order==="shuffle") qs = shuffle(qs);
+  deck = qs.map(q => {
+    const opts = shuffle(q.o.map((text,i)=>({text, correct:i===0})));
+    return {...q, opts};
+  });
+  idx = 0; score = 0; wrong = [];
+  show("quiz"); renderQ();
+}
+
+function renderQ(){
+  answered = false;
+  const q = deck[idx];
+  $("qnum").textContent = `Savol ${idx+1} / ${deck.length}`;
+  $("hsub").textContent = `${idx+1}/${deck.length} • To'g'ri: ${score}`;
+  $("qtopic").textContent = `${q.t+1}. ${TOPICS[q.t]}`;
+  $("qtext").innerHTML = esc(q.q).replace(/app\.exec\(\)/g,"<code>app.exec()</code>");
+  $("prog").style.width = (idx/deck.length*100)+"%";
+  $("opts").innerHTML = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(o.text)}</span></button>`).join("");
+  $("explain").innerHTML = "";
+  setFooter(`<button class="btn" disabled>Javobni tanlang</button>`);
+  window.scrollTo(0,0);
+}
+
+$("opts").onclick = e => {
+  const b = e.target.closest(".opt"); if(!b || answered) return;
+  answered = true;
+  const q = deck[idx], i = +b.dataset.i, ok = q.opts[i].correct;
+  document.querySelectorAll(".opt").forEach((el,j)=>{
+    el.disabled = true;
+    if(q.opts[j].correct) el.classList.add("ok");
+    else if(j===i) el.classList.add("bad");
+  });
+  if(ok) score++; else wrong.push({q, chosen:q.opts[i].text});
+  if(navigator.vibrate) navigator.vibrate(ok?15:[30,40,30]);
+  $("explain").innerHTML = `<div class="explain ${ok?'ok':'bad'}"><b>${ok?'✓ To\'g\'ri!':'✗ Noto\'g\'ri'}</b>${esc(q.e)}</div>`;
+  $("hsub").textContent = `${idx+1}/${deck.length} • To'g'ri: ${score}`;
+  $("prog").style.width = ((idx+1)/deck.length*100)+"%";
+  const last = idx===deck.length-1;
+  setFooter(`<button class="btn" id="next">${last?'Natijani ko\'rish':'Keyingi savol →'}</button>`);
+  $("next").onclick = () => { if(last) showResult(); else { idx++; renderQ(); } };
+  setTimeout(()=>$("explain").scrollIntoView({behavior:"smooth",block:"nearest"}),50);
+};
+
+function showResult(){
+  show("result");
+  const pct = Math.round(score/deck.length*100);
+  const best = +(store.get("gui_best")||0);
+  if(deck.length===QUESTIONS.length && pct>best) store.set("gui_best", pct);
+  $("rPct").textContent = pct+"%";
+  $("rCount").textContent = `${score} / ${deck.length}`;
+  $("hsub").textContent = "Natija";
+  const ring = $("ring");
+  ring.style.stroke = pct>=80?"var(--ok)":pct>=55?"#e0a030":"var(--bad)";
+  requestAnimationFrame(()=>ring.style.strokeDashoffset = 402*(1-pct/100));
+  const [t,x] = pct>=86?["A'lo! 🎉","Mavzuni juda yaxshi o'zlashtirgansiz."]
+              : pct>=71?["Yaxshi! 👍","Biroz takrorlasangiz, a'lo natija bo'ladi."]
+              : pct>=55?["Qoniqarli","Xato javoblarni ko'rib chiqing va qayta urinib ko'ring."]
+              : ["Yana urinib ko'ring","Mavzularni qayta o'qib chiqib, testni takrorlang."];
+  $("rTitle").textContent = t; $("rText").textContent = x;
+  if(!wrong.length){ $("revLabel").classList.add("hidden"); $("review").classList.add("hidden"); }
+  else {
+    $("revLabel").classList.remove("hidden"); $("review").classList.remove("hidden");
+    $("review").innerHTML = wrong.map(w=>`<div class="rev"><p><b>${esc(w.q.q)}</b></p>
+      <p class="w">✗ ${esc(w.chosen)}</p><p class="r">✓ ${esc(w.q.o[0])}</p><p class="mini">${esc(w.q.e)}</p></div>`).join("");
+  }
+  setFooter(`<button class="btn ghost" id="home2">Bosh sahifa</button>` +
+    (wrong.length?`<button class="btn" id="retryWrong">Xatolarni qayta ishlash</button>`:`<button class="btn" id="again">Qayta boshlash</button>`));
+  $("home2").onclick = showStart;
+  if($("again")) $("again").onclick = startQuiz;
+  if($("retryWrong")) $("retryWrong").onclick = () => {
+    deck = shuffle(wrong.map(w=>({...w.q, opts:shuffle(w.q.opts)})));
+    idx=0; score=0; wrong=[]; show("quiz"); renderQ();
+  };
+}
+
+showStart();
+</script>
+</body>
+</html>
