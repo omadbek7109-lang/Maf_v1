@@ -242,7 +242,7 @@ $("themeBtn").onclick = () => {
   document.body.classList.toggle("dark");
   store.set("gui_theme", document.body.classList.contains("dark") ? "dark" : "light");
 };
-$("homeBtn").onclick = () => { if(!answered && idx>0 && !$("quiz").classList.contains("hidden") && !confirm("Testni to'xtatasizmi?")) return; showStart(); };
+$("homeBtn").onclick = () => showStart();
 
 // Start screen
 function renderChips(){
